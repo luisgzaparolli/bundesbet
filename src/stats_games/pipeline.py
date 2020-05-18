@@ -20,7 +20,9 @@ def update():
         # get links are in site and not in storage data, works on this links and update data
         urls = list(set(links_worked) - set(links_save))
         driver = webdriver.Chrome(executable_path=Params.path_crome)
+        print(urls)
         for url in urls:
+            print(url)
             df = get_stats_game(driver, url, df)
         driver.quit()
         df.to_csv(Params.game_stats_data, index=False)

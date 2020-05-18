@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+import time
 from src.params import Params
 
 
@@ -17,15 +18,16 @@ def get_games():
     # click in load more while button exists
     while True:
         try:
-            WebDriverWait(driver, 120).until(
+            WebDriverWait(driver, 320).until(
                 EC.element_to_be_clickable((By.XPATH, '//*[@id="live-table"]/div[1]/div/div/a'))).click()
         except:
+            time.sleep(1)
             break
-    #get page sourge read with BeautifulSoup
+    # get page sourge read with BeautifulSoup
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')
-    #get all div's where have lik of games
-    games = soup.find_all('div', {'class': 'event__match event__match--static event__match--oneLine'})
+    # get all div's where have lik of games
+    games = soup.find_all('div', {'title': 'Click for match detail!'})
     #make a list of links in list comprehension, quit drive and return list
     games = ['https://www.scoreboard.com/uk/match/' + item['id'].split('_')[2] + '/#match-summary' for item in games]
     driver.quit()
