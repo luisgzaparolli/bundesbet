@@ -7,7 +7,7 @@ import pandas as pd
 from src.params import Params
 
 
-def get_comments(driver, df, id_game, url):
+def get_comments(driver: object, df: pd.DataFrame, id_game: str, url: str) -> pd.DataFrame:
     """
     This function make a get in web drive selenium, catch commentaries from game on foxsports site,
     and concat the results to df input and return df with the input
@@ -46,7 +46,7 @@ def get_comments(driver, df, id_game, url):
     return df
 
 
-def make_comments(df, links):
+def make_comments(df: pd.DataFrame, links: list) -> pd.DataFrame:
     """
     With all links of foxsports site, we work link by link, and save append results in data frame
     :param df: data frame with previous commentaries

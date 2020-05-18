@@ -11,24 +11,28 @@ Links:
 Project Organization
 ------------
 
-    ├── README.md                <- The top-level README for developers using this project.
+    ├── README.md                    <- The top-level README for developers using this project.
     |
-    ├── commentary_game          <- Scripts to containing data with commentaries of games
+    ├── commentary_game              <- Scripts to containing data with commentaries of games
     │   ├── data_gathering.py    
     │   ├── data_preparation.py  
     │   └── pipeline.py          
     │
     ├── data                    
-    │   ├── comments.csv         <- Csv with data save from scraping of comments.
-    │   └── game_stats.csv       <- Csv with data save from scraping of game stats.
+    │   ├── comments.csv             <- Csv with data save from scraping of comments.
+    │   └── game_stats.csv           <- Csv with data save from scraping of game stats.
     |
-    ├── commentary_game          <- Scripts to containing data with stats of games
+    ├── docs                         <- Folder contais data dictionaries                 
+    │   ├── comments_dictionary.md  
+    │   └── game_stats_dictionary.md 
+    |
+    ├── commentary_game              <- Scripts to containing data with stats of games
     │   ├── data_gathering.py    
     │   ├── data_preparation.py  
     │   └── pipeline.py   
     |
-    ├── params.py                <- Class with param's used in code
+    ├── params.py                    <- Class with param's used in code
     │
-    └── pipeline.py              <- The ETL (extract-transform-load) pipeline containing the sequence of nodes
+    └── pipeline.py                  <- The ETL (extract-transform-load) pipeline containing the sequence of nodes
          
 --------
