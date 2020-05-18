@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 import time
 
 
-def get_stats_game(driver, url, df):
+def get_stats_game(driver: object, url: str, df: pd.DataFrame) -> pd.DataFrame:
     """
     With the selenium web driver, open a url get stats of a game and append in Data Frame the stats of game
     :param driver: Web driver from selenium
