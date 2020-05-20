@@ -38,9 +38,8 @@ def get_stats_game(driver: object, url: str, df: pd.DataFrame) -> pd.DataFrame:
                                                                                                            infos[
                                                                                                                'goals_away_1half'] else 'Draw'
     # change page to statistic in first half, and get info's
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="a-match-statistics"]'))).click()
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, '//*[@id="statistics-1-statistic"]/span/a'))).click()
+    WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="a-match-statistics"]'))).click()
+    WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="statistics-1-statistic"]/span/a'))).click()
     time.sleep(2)
     # get body info with text and make a list by info
     html_code = driver.find_element_by_tag_name("body").text.split('\n')
@@ -50,10 +49,17 @@ def get_stats_game(driver: object, url: str, df: pd.DataFrame) -> pd.DataFrame:
     stat = html_code[x + i * 3].lower().replace(' ', '_')
     while stat != 'dangerous_attacks':
         stat = html_code[x + i * 3].lower().replace(' ', '_')
-        infos[stat + 'home'] = int(html_code[x + i * 3 - 1].replace('%', ''))
-        infos[stat + 'away'] = int(html_code[x + i * 3 + 1].replace('%', ''))
+        if stat not in ['throw_ins', 'completed_passes']:
+            infos[stat + 'home'] = int(html_code[x + i * 3 - 1].replace('%', ''))
+            infos[stat + 'away'] = int(html_code[x + i * 3 + 1].replace('%', ''))
         i += 1
     # make a aux Data Frame, concat the data to previous Data Frame and return a Data Frame
     df_aux = pd.DataFrame(infos, index=[0])
+    if 'yellow_cardshome' not in list(df_aux.columns):
+        df_aux['yellow_cardshome'] = 0
+        df_aux['yellow_cardsaway'] = 0
+    if 'red_cardshome' not in list(df_aux.columns):
+        df_aux['red_cardshome'] = 0
+        df_aux['red_cardsaway'] = 0
     df = pd.concat([df, df_aux])
     return df
