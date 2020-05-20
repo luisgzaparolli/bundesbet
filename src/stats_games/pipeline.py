@@ -10,8 +10,12 @@ def update():
     Function to find the data saved, and compare with actually data to set if want's to update or not
     """
     # get a data storage, and find links on site
-    df = pd.read_csv(Params.game_stats_data)
-    links_save = sorted((df['url']))
+    try:
+        df = pd.read_csv(Params.game_stats_data)
+        links_save = sorted((df['url']))
+    except:
+        links_save = []
+        df=pd.DataFrame()
     links_worked = sorted(get_games())
     # compare if links stored equals links on site
     if links_save == links_worked:

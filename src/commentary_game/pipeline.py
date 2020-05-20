@@ -9,9 +9,14 @@ def update():
     Function to find the data saved, and compare with actually data to set if want's to update or not
     """
     # get a data storage, and find links on site
-    df = pd.read_csv(Params.comments_data)
+    try:
+        df = pd.read_csv(Params.comments_data)
+        links_save = sorted(list(set(df['url'])))
+    except:
+        df=pd.DataFrame()
+        links_save = []
     links_worked = sorted(get_links())
-    links_save = sorted(list(set(df['url'])))
+
     # compare if links stored equals links on site
     if links_save == links_worked:
         return

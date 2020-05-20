@@ -27,6 +27,8 @@ def get_comments(driver: object, df: pd.DataFrame, id_game: str, url: str) -> pd
     soup = BeautifulSoup(html, 'lxml')
     home = soup.find_all('span', {'class': 'wisbb_bsName'})[0].text
     away = soup.find_all('span', {'class': 'wisbb_bsName'})[1].text
+    home_goals_final = int(soup.find_all('td', {'class': 'wisbb_bsTotal'})[0].text.strip())
+    away_goals_final = int(soup.find_all('td', {'class': 'wisbb_bsTotal'})[1].text.strip())
     # save all commentaries in one list to work, and set the home image to select what team is the commentary
     commentaries = soup.find('table', {'class': 'wisbb_bsCPbpSmallTable'}).find_all('tr')
     img_home = commentaries[0].find('img')['src']
@@ -39,7 +41,8 @@ def get_comments(driver: object, df: pd.DataFrame, id_game: str, url: str) -> pd
         time.append(sum([int(item) for item in time_aux]))
         team.append(home if comments.find('img')['src'] == img_home else away)
         comm.append(comments.find('span', {'class': 'wisbb_bsSoccerPbpDesc'}).text)
-    infos = {'url': urls, 'id_game': ids, 'time': time, 'team': team, 'comm': comm}
+    infos = {'url': urls, 'id_game': ids, 'time': time, 'team': team,
+             'home_goals_final': home_goals_final, 'away_goals_final' : away_goals_final, 'comm': comm}
     # save infos in Data Frame and concat with previous Data Frame
     df_aux = pd.DataFrame(infos)
     df = pd.concat([df, df_aux])
@@ -55,7 +58,10 @@ def make_comments(df: pd.DataFrame, links: list) -> pd.DataFrame:
     """
     # make a driver to create a section were we going to work, and get the last game id to set news id's
     driver = webdriver.Chrome(executable_path=Params.path_crome)
-    id_game = df['id_game'].max()+1
+    try:
+        id_game = df['id_game'].max()+1
+    except:
+        id_game = 0
     # work in each url in links list, to append results in Data Frame, randle error to pass link
     for url in links:
         try:

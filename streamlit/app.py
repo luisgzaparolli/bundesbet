@@ -2,11 +2,13 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from league_stats import ger_table
+from get_inputs import find_games_today
 
 df=pd.read_csv('C:/Users/pedro/Projetos/bundesbet/src/data/game_stats.csv')
 
 def capa():
     st.title('Bundesliga')
+    st.header(find_games_today())
 
 def tabela():
     list_select = np.arange(df['round'].max(),0,-1)

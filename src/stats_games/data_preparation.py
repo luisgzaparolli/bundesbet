@@ -14,7 +14,7 @@ def get_games():
     """
     # make a driver to create a section were we going to work, and get the links of site
     driver = webdriver.Chrome(executable_path=Params.path_crome)
-    driver.get('https://www.scoreboard.com/uk/football/germany/bundesliga/results/')
+    driver.get('https://www.scoreboard.com/soccer/germany/bundesliga/results/')
     # click in load more while button exists
     while True:
         try:
@@ -27,8 +27,8 @@ def get_games():
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')
     # get all div's where have lik of games
-    games = soup.find_all('div', {'title': 'Click for match detail!'})
+    games = soup.find_all('div', {'title': 'Click for game detail!'})
     #make a list of links in list comprehension, quit drive and return list
-    games = ['https://www.scoreboard.com/uk/match/' + item['id'].split('_')[2] + '/#match-summary' for item in games]
+    games = ['https://www.scoreboard.com/game/' + item['id'].split('_')[2] + '/#match-summary' for item in games]
     driver.quit()
     return games
