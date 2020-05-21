@@ -6,7 +6,7 @@ def main():
     """
     This functions check and if is necessary update data set's
     """
-    update_commentary()
+    #update_commentary()
     update_gamestats()
 
 
