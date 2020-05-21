@@ -120,25 +120,31 @@ def ger_table(rnd, df):
     table.index = np.arange(1, len(table) + 1)
     return table
 
-
-
 def ger_final_results(df):
-        final_result=df.groupby('final_result')['final_result'].count()
-        total=final_result.sum()
-        final_result=(final_result/total).round(2)
-        fig=px.bar(x=final_result.index,y=final_result,  labels={'x':'Final Results', 'y':'% of rounds'},text=final_result,title='Percents of Final Results', color=['red','green','blue'],)
-        fig.update_traces(texttemplate='%{text:%}')
-        fig.update_layout(showlegend=False)
-        return(fig)
+    final_result=df.groupby('final_result')['final_result'].count()
+    total=final_result.sum()
+    final_result=(final_result/total).round(2)
+    fig=px.bar(x=final_result.index,y=final_result,  labels={'x':'Final Results', 'y':'% of rounds'},text=final_result,title='Percents of Final Results', color=['red','green','blue'],)
+    fig.update_traces(texttemplate='%{text:%}')
+    fig.update_layout(showlegend=False)
+    return(fig)
 
 def first_final_round(df):
-        df_aux=pd.crosstab(index=df['1half_result'], columns=df['final_result']).reset_index()
-        df_aux.loc[:,['Away','Home','Draw']] = Normalizer(norm='l1').fit_transform(df_aux.loc[:,['Away','Home','Draw']])
-        df_aux=df_aux.round(2)
-        fig1 = go.Figure(go.Bar(x=df_aux['1half_result'], y=df_aux['Away'], name='Away',text=df_aux['Away'],textposition='inside'))
-        fig1.add_trace(go.Bar(x=df_aux['1half_result'], y=df_aux['Draw'], name='Draw',text=df_aux['Draw'],textposition='inside'))
-        fig1.add_trace(go.Bar(x=df_aux['1half_result'], y=df_aux['Home'], name='Home',text=df_aux['Home'],textposition='inside'))
-        fig1.update_traces(texttemplate='%{text:%}')
-        fig1.update_layout(title='Result of First time x Final Result',barmode='stack', xaxis={'categoryorder':'array'},
-                 yaxis_title='Final Result', xaxis_title='First time Result')
-        return(fig1)
+    df_aux=pd.crosstab(index=df['1half_result'], columns=df['final_result']).reset_index()
+    df_aux.loc[:,['Away','Home','Draw']] = Normalizer(norm='l1').fit_transform(df_aux.loc[:,['Away','Home','Draw']])
+    df_aux=df_aux.round(2)
+    fig1 = go.Figure(go.Bar(x=df_aux['1half_result'], y=df_aux['Away'], name='Away',text=df_aux['Away'],textposition='inside'))
+    fig1.add_trace(go.Bar(x=df_aux['1half_result'], y=df_aux['Draw'], name='Draw',text=df_aux['Draw'],textposition='inside'))
+    fig1.add_trace(go.Bar(x=df_aux['1half_result'], y=df_aux['Home'], name='Home',text=df_aux['Home'],textposition='inside'))
+    fig1.update_traces(texttemplate='%{text:%}')
+    fig1.update_layout(title='Result of First time x Final Result',barmode='stack', xaxis={'categoryorder':'array'},
+                yaxis_title='Final Result', xaxis_title='First time Result')
+    return(fig1)
+
+def last_games(df,team):
+    df_show=df.drop(columns=['url'])
+    df_show=df_show.query(f'(home_team == "{team}") | (away_team == "{team}")').sort_values(by=['round'], ascending=False)
+    df_show.set_index('round', inplace=True)
+    df_show=df_show[['home_team','goals_home_final','goals_away_final','away_team']]
+    #df_show=df_show.style.apply(lambda x: ["background: red" if v == team else "" for v in x], axis = 0, inplace=True)
+    return df_show.head(5)
