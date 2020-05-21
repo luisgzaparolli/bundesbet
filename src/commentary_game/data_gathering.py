@@ -18,6 +18,13 @@ def get_comments(driver: object, df: pd.DataFrame, id_game: str, url: str) -> pd
     :return: return a Data Frame after concat the input df and info's of url
     """
     # make a get in url of game and save the page source to work
+    dict_names = {'1. FC Köln': 'FC Koln', '1. FC Union Berlin': 'Union Berlin', '1899 Hoffenheim': 'Hoffenheim',
+                  'Bayer Leverkusen': 'Bayer Leverkusen', 'Bayern Munich': 'Bayern Munich',
+                  'Borussia Dortmund': 'Dortmund',
+                  'Eintracht Frankfurt': 'Eintracht Frankfurt', 'FC Augsburg': 'Augsburg', 'FC Schalke 04': 'Schalke',
+                  'FSV Mainz 05': 'Mainz', 'Fortuna Düsseldorf': 'Dusseldorf', 'Hertha BSC Berlin': 'Hertha Berlin',
+                  'Mönchengladbach': 'B. Monchengladbach', 'RB Leipzig': 'RB Leipzig', 'SC Freiburg': 'Freiburg',
+                  'SC Paderborn': 'Paderborn', 'VfL Wolfsburg': 'Wolfsburg', 'Werder Bremen': 'Werder Bremen'}
     driver.get(url)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="fullCommentary"]')))
     element = driver.find_element_by_id('fullCommentary')
@@ -26,7 +33,9 @@ def get_comments(driver: object, df: pd.DataFrame, id_game: str, url: str) -> pd
     # read the html with BeautifulSoup and get the name of teams
     soup = BeautifulSoup(html, 'lxml')
     home = soup.find_all('span', {'class': 'wisbb_bsName'})[0].text
+    home = dict_names[home]
     away = soup.find_all('span', {'class': 'wisbb_bsName'})[1].text
+    away=dict_names[away]
     home_goals_final = int(soup.find_all('td', {'class': 'wisbb_bsTotal'})[0].text.strip())
     away_goals_final = int(soup.find_all('td', {'class': 'wisbb_bsTotal'})[1].text.strip())
     # save all commentaries in one list to work, and set the home image to select what team is the commentary
@@ -41,7 +50,7 @@ def get_comments(driver: object, df: pd.DataFrame, id_game: str, url: str) -> pd
         time.append(sum([int(item) for item in time_aux]))
         team.append(home if comments.find('img')['src'] == img_home else away)
         comm.append(comments.find('span', {'class': 'wisbb_bsSoccerPbpDesc'}).text)
-    infos = {'url': urls, 'id_game': ids, 'time': time, 'team': team,
+    infos = {'url': urls, 'id_game': ids,'home_team':home, 'away_team':away, 'time': time, 'team': team,
              'home_goals_final': home_goals_final, 'away_goals_final' : away_goals_final, 'comm': comm}
     # save infos in Data Frame and concat with previous Data Frame
     df_aux = pd.DataFrame(infos)

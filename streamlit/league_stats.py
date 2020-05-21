@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import plotly.express as px
+from sklearn.preprocessing import Normalizer
+import plotly.express as px
+import plotly.graph_objects as go
+
 
 def get_games(team, rnd, df):
     """
@@ -114,3 +119,26 @@ def ger_table(rnd, df):
     table = table.sort_values(by=['points'], ascending=False).reset_index(drop=True)
     table.index = np.arange(1, len(table) + 1)
     return table
+
+
+
+def ger_final_results(df):
+        final_result=df.groupby('final_result')['final_result'].count()
+        total=final_result.sum()
+        final_result=(final_result/total).round(2)
+        fig=px.bar(x=final_result.index,y=final_result,  labels={'x':'Final Results', 'y':'% of rounds'},text=final_result,title='Percents of Final Results', color=['red','green','blue'],)
+        fig.update_traces(texttemplate='%{text:%}')
+        fig.update_layout(showlegend=False)
+        return(fig)
+
+def first_final_round(df):
+        df_aux=pd.crosstab(index=df['1half_result'], columns=df['final_result']).reset_index()
+        df_aux.loc[:,['Away','Home','Draw']] = Normalizer(norm='l1').fit_transform(df_aux.loc[:,['Away','Home','Draw']])
+        df_aux=df_aux.round(2)
+        fig1 = go.Figure(go.Bar(x=df_aux['1half_result'], y=df_aux['Away'], name='Away',text=df_aux['Away'],textposition='inside'))
+        fig1.add_trace(go.Bar(x=df_aux['1half_result'], y=df_aux['Draw'], name='Draw',text=df_aux['Draw'],textposition='inside'))
+        fig1.add_trace(go.Bar(x=df_aux['1half_result'], y=df_aux['Home'], name='Home',text=df_aux['Home'],textposition='inside'))
+        fig1.update_traces(texttemplate='%{text:%}')
+        fig1.update_layout(title='Result of First time x Final Result',barmode='stack', xaxis={'categoryorder':'array'},
+                 yaxis_title='Final Result', xaxis_title='First time Result')
+        return(fig1)

@@ -7,8 +7,9 @@ def main():
     This functions check and if is necessary update data set's
     """
     update_commentary()
-    update_gamestats()
+    #update_gamestats()
 
 
 if __name__ == '__main__':
     main()
+
