@@ -4,6 +4,7 @@ import plotly.express as px
 from sklearn.preprocessing import Normalizer
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.express as px
 
 
 def get_games(team, rnd, df):
@@ -148,3 +149,24 @@ def last_games(df,team):
     df_show=df_show[['home_team','goals_home_final','goals_away_final','away_team']]
     #df_show=df_show.style.apply(lambda x: ["background: red" if v == team else "" for v in x], axis = 0, inplace=True)
     return df_show.head(5)
+
+def stats_home_away(df,team):
+    home={}
+    home['wins']=len(df.query(f'home_team == "{team}" & final_result == "Home"'))
+    home['draw']=len(df.query(f'home_team == "{team}" & final_result == "Draw"'))
+    home['loses']=len(df.query(f'home_team == "{team}" & final_result == "Away"'))
+    away={}
+    away['wins']=len(df.query(f'away_team == "{team}" & final_result == "Away"'))
+    away['draw']=len(df.query(f'away_team == "{team}" & final_result == "Draw"'))
+    away['loses']=len(df.query(f'away_team == "{team}" & final_result == "Home"'))
+    return pd.DataFrame([home,away], index=['home','away'])
+
+def get_positions(df,team):
+    rnd_max=df['round'].max()+1
+    dfs=[ger_table(i, df) for i in range(0,rnd_max)]
+    position=[list(dfs[i]['teams']).index(team)+1 for i in range(1,rnd_max)]
+    fig = px.line(x=np.arange(1,rnd_max), y=position,labels={'x':'Round', 'y':'Position'})
+    fig.data[0].update(mode='markers+lines')
+    fig['layout']['yaxis1'].update(title='', range=[20,0], dtick=5, autorange=False)
+    fig.update_layout(yaxis_title='Posição', xaxis_title='Rodada')
+    return(fig)
